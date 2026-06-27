@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile YouTube Clipper</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 30px auto; padding: 20px; background: #f9f9f9; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 8px 0 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #ff0000; color: white; border: none; width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:disabled { background: #ccc; }
+        #status { margin-top: 15px; font-weight: bold; text-align: center; }
+        #downloadBox { display: none; margin-top: 20px; text-align: center; }
+        #downloadBox a { background: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>✂️ YouTube Video Clipper</h2>
+        <label>YouTube Link:</label>
+        <input type="text" id="videoUrl" placeholder="Paste URL here...">
+        
+        <label>Start Time (HH:MM:SS or seconds):</label>
+        <input type="text" id="startTime" value="00:00:10">
+        
+        <label>Duration (seconds):</label>
+        <input type="number" id="duration" value="5">
+        
+        <button id="clipBtn">Generate Short Clip</button>
+        <div id="status"></div>
+        <div id="downloadBox"><a id="dlLink" href="#" download>📥 Download Clip</a></div>
+    </div>
+    <script>
+        document.getElementById('clipBtn').addEventListener('click', async () => {
+            const videoUrl = document.getElementById('videoUrl').value;
+            const startTime = document.getElementById('startTime').value;
+            const duration = document.getElementById('duration').value;
+            const status = document.getElementById('status');
+            const dlBox = document.getElementById('downloadBox');
+            const btn = document.getElementById('clipBtn');
+
+            if(!videoUrl) return alert('Paste a link!');
+
+            status.innerText = "Cutting stream... Please wait.";
+            status.style.color = "orange";
+            dlBox.style.display = "none";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/clip', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ videoUrl, startTime, duration })
+                });
+                const data = await res.json();
+                if(res.ok) {
+                    status.innerText = "Done!";
+                    status.style.color = "green";
+                    document.getElementById('dlLink').href = data.downloadUrl;
+                    dlBox.style.display = "block";
+                } else {
+                    status.innerText = "Error: " + data.error;
+                    status.style.color = "red";
+                }
+            } catch {
+                status.innerText = "Failed to connect to server.";
+                status.style.color = "red";
+            } finally { btn.disabled = false; }
+        });
+    </script>
+</body>
+</html>
+
