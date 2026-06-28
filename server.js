@@ -22,7 +22,8 @@ app.post('/api/clip', async (req, res) => {
     console.log(`Fetching stream links from YouTube...`);
 
     // Explicitly forces yt-dlp to use Node as its JS engine execution layer
-const ytdlpCmd = `yt-dlp --add-header "User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" --add-header "Accept-Language:en-US,en;q=0.9" --js-runtime node -g -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]" "${videoUrl}"`;
+const ytdlpCmd = `/usr/local/bin/yt-dlp --add-header "User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" --add-header "Accept-Language:en-US,en;q=0.9" --js-runtime node -g -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]" "${videoUrl}"`;
+
 
 
 
