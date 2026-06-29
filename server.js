@@ -1,3 +1,11 @@
+process.on("uncaughtException", (err) => {
+  console.error("CRASH:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error("REJECTION:", err);
+});
+
 const express = require('express');
 const cors = require('cors');
 const { exec } = require('child_process');
