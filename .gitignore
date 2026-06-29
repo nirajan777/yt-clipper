@@ -1,3 +1,5 @@
 node_modules/
-public/clip-*.mp4
-
+.env
+public/*.mp4
+npm-debug.log
+.DS_Store
